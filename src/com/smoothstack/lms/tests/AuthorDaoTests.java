@@ -18,8 +18,7 @@ public class AuthorDaoTests {
     public void loadMap() throws IOException {
         authorMap = AuthorDao.createMap();
         authorMap.forEach((key,author)->{
-            System.out.println(author.getName()+";"+author.getId()+";" +
-                    author.getBooks());
+            System.out.println(author.getName()+";"+author.getId()+";");
         });
     }
 

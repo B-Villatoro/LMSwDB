@@ -1,4 +1,4 @@
-package com.smoothstack.lms.service;
+package com.smoothstack.lms.myutil;
 
 public class Env {
 

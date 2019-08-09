@@ -76,7 +76,7 @@ public class BookService {
                 } else {
                     //if author does not exist add the book through author handler
                     System.out.println("Author does not exist, creating author");
-                    AuthorService.addAuthor(authorId,title,isbn,publisherId);
+                    AuthorService.addAuthor(authorId);
                 }
             }
         }//end big else
@@ -110,13 +110,8 @@ public class BookService {
                     System.out.println("What would you like to change it to?");
                     String changeTitle = scan.nextLine();
 
-                    authorMap.get(b.getAuthorId()).getBooks().remove(b);
-                    b.setTitle(changeTitle);
-
-                    authorMap.get(b.getAuthorId()).getBooks().add(b);
-                    bookMap.put(bookKey, b);
+                    bookMap.get(bookKey).setTitle(changeTitle);
                     BookDao.update(bookMap);
-                    AuthorDao.update(authorMap);
                     break;
 
                 case "2":
@@ -171,26 +166,16 @@ public class BookService {
     }
 
     public static void deleteBook() {
-        Map<String, Author> authorMap = AuthorDao.createMap();
         Map<String, Book> bookMap = BookDao.createMap();
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Enter the isbn you would like to delete");
         String deleteKey = scan.nextLine();
         deleteKey = "isbn-" + deleteKey;
-        String finalDeleteKey = deleteKey;
 
         if (bookMap.containsKey(deleteKey)) {
-            authorMap.forEach((key, bookList) -> {
-                if (bookList.getBooks().contains(bookMap.get(finalDeleteKey))) {
-                    bookList.getBooks().remove(bookMap.get(finalDeleteKey));
-                    AuthorDao.update(authorMap);
-                    if (authorMap.get(key).getBooks().isEmpty()) {
-                        AuthorDao.delete(key, authorMap);
-                    }
-                }
-            });
             BookDao.delete(deleteKey, bookMap);
+            System.out.println("Book Deleted!");
         } else {
             System.out.println("Book does not exist");
         }

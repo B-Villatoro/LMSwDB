@@ -111,16 +111,6 @@ public class PublisherService {
                         }
                     });
 
-                    //first get the author id of current book that was changed, then for each of those books
-                    //that contains old key change it then update author map
-                    authorMap.forEach((key,author)->{
-                        authorMap.get(key).getBooks().forEach(book->{
-                            if(book.getPublisherId().equalsIgnoreCase(publisherMap.get(finalPublisherKey).getId())){
-                                authorMap.get(key).getBooks().get(authorMap.get(key).getBooks().indexOf(book))
-                                        .setPublisherId(finalChangePid);
-                            }
-                        });
-                    });
 
                     p.setId(changeId);
                     publisherMap.remove(publisherKey);
@@ -128,7 +118,6 @@ public class PublisherService {
 
                     PublisherDao.update(publisherMap);
                     BookDao.update(bookMap);
-                    AuthorDao.update(authorMap);
                     System.out.println("Publisher id has been changed!");
                     break;
             }
@@ -150,15 +139,6 @@ public class PublisherService {
         String finalDeleteKey = deleteKey;
 
         if (publisherMap.containsKey(deleteKey)) {
-            authorMap.forEach((key, bookList) -> {
-                if (bookList.getBooks().contains(bookMap.get(finalDeleteKey))) {
-                    bookList.getBooks().remove(bookMap.get(finalDeleteKey));
-                    AuthorDao.update(authorMap);
-                    if (authorMap.get(key).getBooks().isEmpty()) {
-                        AuthorDao.delete(key, authorMap);
-                    }
-                }
-            });
 
             bookMap.forEach((key, book) -> {
                 if (book.getPublisherId().equalsIgnoreCase(publisherMap.get(finalDeleteKey).getId())) {

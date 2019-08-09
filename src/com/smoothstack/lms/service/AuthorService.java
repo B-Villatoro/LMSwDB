@@ -16,7 +16,17 @@ import java.util.Scanner;
 public class AuthorService {
 
 
-//Prompt users to fulfill requirements for the dao
+    //Prompt users to fulfill requirements for the
+    public static void addAuthor(String authorId) {
+        System.out.println("Please enter the author name you would like to add");
+        Scanner scan = new Scanner(System.in);
+        String name = scan.nextLine();
+
+        AuthorDao.add(new Author(name, authorId));
+        System.out.println("Author Added!Let's continue.");
+    }
+
+
     public static void addAuthor() {
         Map<String, Author> authorMap = AuthorDao.createMap();
         Scanner scan = new Scanner(System.in);
@@ -34,7 +44,7 @@ public class AuthorService {
             name = scan.nextLine();
 
             AuthorDao.add(new Author(name, authorId));
-            System.out.println(name+" is added!");
+            System.out.println(name + " is added!");
         }
     }
 
@@ -92,6 +102,7 @@ public class AuthorService {
             System.out.println("Author Id does not exist");
         }
     }
+
     public static void deleteAuthor() {
         Map<String, Author> authorMap = AuthorDao.createMap();
         Map<String, Book> bookMap = BookDao.createMap();

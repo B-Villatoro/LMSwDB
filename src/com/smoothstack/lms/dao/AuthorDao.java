@@ -1,35 +1,47 @@
 package com.smoothstack.lms.dao;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 import com.smoothstack.lms.model.Author;
+import com.smoothstack.lms.myutil.Env;
 
 public class AuthorDao {
 
-    public static void add(Author author) {
 
+    public static void add(Author author) {
         try {
-            FileWriter fr = new FileWriter("./resources/authors.csv", true);
-            BufferedWriter writer = new BufferedWriter(fr);
-            writer.newLine();
-            writer.append(author.getName() + ";");
-            writer.append(author.getId() + ";");
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from tbl_author");
+            while (rs.next())
+                System.out.println(rs.getInt(1) + "  " + rs.getString(2));
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
-    public static void show() {
-        File fileName = new File("./resources/authors.csv");
-        try {
-            FileReader fr = new FileReader(fileName);
-            BufferedReader br = new BufferedReader(fr);
-            br.lines().forEach(System.out::println);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void show() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+//here library is database name, root is username and password
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from tbl_author");
+            while (rs.next())
+                System.out.println(rs.getInt(1) + "  " + rs.getString(2));
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
@@ -64,7 +76,7 @@ public class AuthorDao {
                 map.remove(key);
                 map.forEach((mapKey, author) -> {
                     try {
-                        String stringBuild = author.getName()+ ";" + author.getId() +";";
+                        String stringBuild = author.getName() + ";" + author.getId() + ";";
                         writer.append(stringBuild);
                         writer.newLine();
                     } catch (IOException exc0) {

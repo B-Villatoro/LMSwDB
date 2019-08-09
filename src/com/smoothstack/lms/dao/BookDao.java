@@ -3,6 +3,10 @@ package com.smoothstack.lms.dao;
 import com.smoothstack.lms.model.Book;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 public class BookDao {
@@ -28,15 +32,17 @@ public class BookDao {
     }
 
     public static void show() {
-        System.out.println("Start 0");
-        File fileName = new File("./resources/book.csv");
-        try {
-            FileReader fr = new FileReader(fileName);
-            BufferedReader br = new BufferedReader(fr);
-            br.lines().forEach(System.out::println);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con= DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/library","root","724393");
+//here library is database name, root is username and password
+            Statement stmt=con.createStatement();
+            ResultSet rs=stmt.executeQuery("select * from tbl_book");
+            while(rs.next())
+                System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));
+            con.close();
+        }catch(Exception e){ System.out.println(e);}
     }
 
     public static Map<String, Book> createMap() {
