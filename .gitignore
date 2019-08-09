@@ -3,4 +3,8 @@
 /.idea/tasks.xml
 /.idea/*.iml
 /out
-/LibraryManagementSystem.iml
+/LMSwDB.iml
+/.idea
+/localConfig
+/src/com.smoothstack.lms.myutil
+/src/com/smoothstack/lms/myutil
