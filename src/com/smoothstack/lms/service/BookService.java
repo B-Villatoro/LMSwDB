@@ -49,7 +49,6 @@ public class BookService {
                 if (authorMap.containsKey(authorId)) {
                     //all passes create book
                     BookDao.add(new Book(title, (isbn), authorId, publisherId));
-                    authorMap.get(authorId).getBooks().add(new Book(title, (isbn), authorId, publisherId));
                     System.out.println("Book added! Returning to main menu.");
                     Menu.mainMenu();
                 } else {
@@ -71,8 +70,7 @@ public class BookService {
                 authorId = "aid-" + authorId;
                 if (authorMap.containsKey(authorId)) {
                     //all passes create book
-                    BookDao.add(new Book(title, (isbn), authorId, publisherId));
-                    authorMap.get(authorId).getBooks().add(new Book(title, (isbn), authorId, publisherId));
+                    BookDao.add(new Book(title, isbn, authorId, publisherId));
                     System.out.println("Book added! Returning to main menu.");
                     Menu.mainMenu();
                 } else {

@@ -15,52 +15,7 @@ import java.util.Scanner;
 
 public class AuthorService {
 
-    //method creates book and returns it to the list. Needed for adding and author with a list of books
-    public static List<Book> createBook(List<Book> bookL, String authorId) {
-        String isbn;
-        String title;
-        String publisherId;
-        String yn;
-        Scanner scan = new Scanner(System.in);
-        Map<String, Publisher> publisherMap = PublisherDao.createMap();
-        Map<String, Book> bookMap = BookDao.createMap();
 
-        System.out.println("Please enter the ISBN of the book written by the author");
-        isbn = "isbn-" + scan.nextLine();
-        if (bookMap.containsKey(isbn)) {
-            System.out.println("That book already exists, would you like to try again?");
-            yn = scan.nextLine();
-            if (yn.equalsIgnoreCase("y") || yn.equalsIgnoreCase("yes")) {
-                return createBook(bookL, authorId);
-            } else Menu.mainMenu();
-        }
-
-        System.out.println("Please enter the publisher Id of the book");
-        publisherId = "pid-" + scan.nextLine();
-        if (publisherMap.containsKey(publisherId)) {
-
-            System.out.println("Please enter the title written by said author");
-            title = scan.nextLine();
-
-            bookL.add(new Book(title, isbn, authorId, publisherId));
-            BookDao.add(new Book(title, isbn, authorId, publisherId));
-
-            System.out.println("Would you like to add another? y/n");
-            yn = scan.nextLine();
-            yn = yn.toLowerCase();
-
-            if (yn.equalsIgnoreCase("y") || yn.equalsIgnoreCase("yes")) {
-                return createBook(bookL, authorId);
-            }
-        } else {
-            System.out.println("Publisher does not exist, please add publisher first");
-            PublisherService.addPublisher(publisherId);
-            System.out.println("lets try this again");
-            return createBook(bookL,authorId);
-        }
-
-        return bookL;
-    }
 //Prompt users to fulfill requirements for the dao
     public static void addAuthor() {
         Map<String, Author> authorMap = AuthorDao.createMap();
@@ -78,27 +33,8 @@ public class AuthorService {
             System.out.println("Please enter the author name you would like to add");
             name = scan.nextLine();
 
-            List<Book> bookList = new ArrayList<>();
-            bookList = createBook(bookList, authorId);
-
-            AuthorDao.add(new Author(name, bookList, authorId));
-            System.out.println("Author added!");
-        }
-    }
-
-    public static void addAuthor(String authorId,String title,String isbn,String publisherId){
-        System.out.println("Please enter the author name you would like to add");
-        Scanner scan = new Scanner(System.in);
-        String name = scan.nextLine();
-
-        List<Book> bookList = new ArrayList<>();
-        bookList.add(new Book(title,isbn,authorId,publisherId));
-        System.out.println("Would you like to add more under this author? y/n");
-        String userAnswer = scan.nextLine();
-        if(userAnswer.equalsIgnoreCase("y")||userAnswer.equalsIgnoreCase("yes")){
-            bookList = createBook(bookList, authorId);
-        }else{
-            AuthorDao.add(new Author(name, bookList, authorId));
+            AuthorDao.add(new Author(name, authorId));
+            System.out.println(name+" is added!");
         }
     }
 
@@ -136,7 +72,6 @@ public class AuthorService {
                     }
 
                     Map<String, Book> bookMap = BookDao.createMap();
-
                     String finalChangeAid = changeAid;
                     String finalAuthorKey = authorKey;
                     bookMap.forEach((key, book) -> {
@@ -149,6 +84,7 @@ public class AuthorService {
                     authorMap.put(changeAid, a);
                     AuthorDao.update(authorMap);
                     BookDao.update(bookMap);
+                    System.out.println("Author and all books have been updated to the new id!");
                     break;
             }
 
@@ -179,3 +115,68 @@ public class AuthorService {
 
     }
 }
+
+//method creates book and returns it to the list. Needed for adding and author with a list of books
+// ***** Deprecated ***********
+//    public static List<Book> createBook(List<Book> bookL, String authorId) {
+//        String isbn;
+//        String title;
+//        String publisherId;
+//        String yn;
+//        Scanner scan = new Scanner(System.in);
+//        Map<String, Publisher> publisherMap = PublisherDao.createMap();
+//        Map<String, Book> bookMap = BookDao.createMap();
+//
+//        System.out.println("Please enter the ISBN of the book written by the author");
+//        isbn = "isbn-" + scan.nextLine();
+//        if (bookMap.containsKey(isbn)) {
+//            System.out.println("That book already exists, would you like to try again?");
+//            yn = scan.nextLine();
+//            if (yn.equalsIgnoreCase("y") || yn.equalsIgnoreCase("yes")) {
+//                return createBook(bookL, authorId);
+//            } else Menu.mainMenu();
+//        }
+//
+//        System.out.println("Please enter the publisher Id of the book");
+//        publisherId = "pid-" + scan.nextLine();
+//        if (publisherMap.containsKey(publisherId)) {
+//
+//            System.out.println("Please enter the title written by said author");
+//            title = scan.nextLine();
+//
+//            bookL.add(new Book(title, isbn, authorId, publisherId));
+//            BookDao.add(new Book(title, isbn, authorId, publisherId));
+//
+//            System.out.println("Would you like to add another? y/n");
+//            yn = scan.nextLine();
+//            yn = yn.toLowerCase();
+//
+//            if (yn.equalsIgnoreCase("y") || yn.equalsIgnoreCase("yes")) {
+//                return createBook(bookL, authorId);
+//            }
+//        } else {
+//            System.out.println("Publisher does not exist, please add publisher first");
+//            PublisherService.addPublisher(publisherId);
+//            System.out.println("lets try this again");
+//            return createBook(bookL,authorId);
+//        }
+//        return bookL;
+//    }
+
+//Overloaded method to call from add Book
+//***** Deprecated*********
+//    public static void addAuthor(String authorId,String title,String isbn,String publisherId){
+//        System.out.println("Please enter the author name you would like to add");
+//        Scanner scan = new Scanner(System.in);
+//        String name = scan.nextLine();
+//
+//        List<Book> bookList = new ArrayList<>();
+//        bookList.add(new Book(title,isbn,authorId,publisherId));
+//        System.out.println("Would you like to add more under this author? y/n");
+//        String userAnswer = scan.nextLine();
+//        if(userAnswer.equalsIgnoreCase("y")||userAnswer.equalsIgnoreCase("yes")){
+//            bookList = createBook(bookList, authorId);
+//        }else{
+//            AuthorDao.add(new Author(name, bookList, authorId));
+//        }
+//    }
