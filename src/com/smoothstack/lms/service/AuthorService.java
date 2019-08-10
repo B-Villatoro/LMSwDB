@@ -1,16 +1,8 @@
 package com.smoothstack.lms.service;
 
-import com.smoothstack.lms.app.Menu;
 import com.smoothstack.lms.dao.AuthorDao;
-import com.smoothstack.lms.dao.BookDao;
-import com.smoothstack.lms.dao.PublisherDao;
 import com.smoothstack.lms.model.Author;
-import com.smoothstack.lms.model.Book;
-import com.smoothstack.lms.model.Publisher;
 import com.smoothstack.lms.myutil.IdValidate;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -85,11 +77,8 @@ public class AuthorService {
                         System.out.println("Author id already exists or is not valid, please try again");
                         changeAid = scan.nextLine();
                     }
-
-                    int finalChangeAid = IdValidate.parser(changeAid);
-
-                    updateAuthor.setId(finalChangeAid);
-                    AuthorDao.update(updateAuthor);
+                    updateAuthor.setId(IdValidate.parser(changeAid));
+                    AuthorDao.updateById(updateAuthor,IdValidate.parser(changeAid));
 
                     System.out.println("Author and all books have been updated to the new id!");
                     break;

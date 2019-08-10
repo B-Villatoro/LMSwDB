@@ -112,9 +112,8 @@ public class PublisherService {
                         }
 
                     }
-
                     p.setId(IdValidate.parser(changeId));
-                    PublisherDao.update(p);
+                    PublisherDao.updateById(p,IdValidate.parser(publisherKey));
                     System.out.println("Publisher id has been changed!");
                     break;
             }

@@ -95,5 +95,22 @@ public class BookDao {
             System.out.println(e);
         }
     }
+    public static void updateById(Book book,int oldId) {
+        try {
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            PreparedStatement stmt = con.prepareStatement("UPDATE tbl_book " +
+                    "SET bookId = (?), title=(?), authorId=(?), pubId=(?)" +
+                    "WHERE bookId = (?)");
+            stmt.setInt(1, book.getIsbn());
+            stmt.setString(2, book.getTitle());
+            stmt.setInt(3, book.getAuthorId());
+            stmt.setInt(4, oldId);
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }
 

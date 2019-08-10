@@ -82,4 +82,21 @@ public class AuthorDao {
             System.out.println(e);
         }
     }
+
+    public static void updateById(Author author,int oldId) {
+        try {
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            PreparedStatement stmt = con.prepareStatement("UPDATE tbl_author SET authorId = (?),authorName = (?) "+
+                    "WHERE authorId = (?)");
+            stmt.setInt(1, author.getId());
+            stmt.setString(2, author.getName());
+            stmt.setInt(3, oldId);
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
 }

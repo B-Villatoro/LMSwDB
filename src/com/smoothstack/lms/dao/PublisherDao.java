@@ -87,6 +87,23 @@ public class PublisherDao {
             System.out.println(e);
         }
     }
+
+    public static void updateById(Publisher publisher,int oldId) {
+        try {
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            PreparedStatement stmt = con.prepareStatement("UPDATE tbl_author " +
+                    "SET publisherId = (?),publisherName = (?), publisherAddress = (?) "+
+                    "WHERE publisherId = (?)");
+            stmt.setInt(1, publisher.getId());
+            stmt.setString(2, publisher.getName());
+            stmt.setInt(3, oldId);
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }
 
 

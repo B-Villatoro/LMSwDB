@@ -123,7 +123,10 @@ public class BookService {
 
         System.out.println("Enter the ISBN that you would like to update");
         bookKey = scan.nextLine();
-        bookKey = "isbn-" + bookKey;
+        while (!IdValidate.isValid(bookKey)) {
+            System.out.println("ISBN not valid please try again");
+            bookKey = scan.nextLine();
+        }
 
         if (bookMap.containsKey(bookKey)) {
             //create a book based off books csv
@@ -153,12 +156,9 @@ public class BookService {
                         changeIsbn = scan.nextLine();
                     }
 
-                    int newIsbn = IdValidate.parser(changeIsbn);
+                    b.setIsbn(IdValidate.parser(changeIsbn));
 
-
-                    b.setIsbn(newIsbn);
-
-                    BookDao.update(b);
+                    BookDao.updateById(b, IdValidate.parser(bookKey));
                     break;
 
                 case "3":
@@ -194,11 +194,14 @@ public class BookService {
                     } else {
                         System.out.println("Publisher does not exist");
                     }
+                    break;
+                default:
+                    System.out.println("Invalid option");
+                    break;
             }
         } else {
             System.out.println("ISBN does not exist");
         }
-
     }
 
     public static void deleteBook() {
