@@ -1,23 +1,23 @@
 package com.smoothstack.lms.model;
 
 public class Borrower {
-    String cardNo;
+    int cardNo;
     String borrowerName;
     String borrowerAddress;
     String borrowerPhone;
 
-    public Borrower(String cardNo, String borrowerName, String borrowerAddress, String borrowerPhone) {
+    public Borrower(int cardNo, String borrowerName, String borrowerAddress, String borrowerPhone) {
         this.cardNo = cardNo;
         this.borrowerName = borrowerName;
         this.borrowerAddress = borrowerAddress;
         this.borrowerPhone = borrowerPhone;
     }
 
-    public String getCardNo() {
+    public int getCardNo() {
         return cardNo;
     }
 
-    public void setCardNo(String cardNo) {
+    public void setCardNo(int cardNo) {
         this.cardNo = cardNo;
     }
 

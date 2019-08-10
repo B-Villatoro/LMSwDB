@@ -3,18 +3,16 @@ package com.smoothstack.lms.model;
 public class Book {
 
     private String title;
-    private String isbn;
-    private String publisherId;
-    private String authorId;
+    private int isbn;
+    private int publisherId;
+    private int authorId;
 
-    public Book(String title, String isbn,String authorId,String publisherId) {
+    public Book(String title, int isbn, int publisherId, int authorId) {
         this.title = title;
         this.isbn = isbn;
-        this.authorId = authorId;
         this.publisherId = publisherId;
-
+        this.authorId = authorId;
     }
-    public Book(){}
 
     public String getTitle() {
         return title;
@@ -24,29 +22,27 @@ public class Book {
         this.title = title;
     }
 
-    public String getIsbn() {
+    public int getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(String isbn) {
+    public void setIsbn(int isbn) {
         this.isbn = isbn;
     }
 
-    public String getPublisherId() {
+    public int getPublisherId() {
         return publisherId;
     }
 
-    public void setPublisherId(String publisherId) {
+    public void setPublisherId(int publisherId) {
         this.publisherId = publisherId;
     }
 
-    public String getAuthorId() {
+    public int getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(String authorId) {
+    public void setAuthorId(int authorId) {
         this.authorId = authorId;
     }
-
-
 }

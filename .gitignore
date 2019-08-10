@@ -8,3 +8,5 @@
 /localConfig
 /src/com.smoothstack.lms.myutil
 /src/com/smoothstack/lms/myutil/Env.java
+src/com/smoothstack/lms/myutil/Env.java
+*Env.java

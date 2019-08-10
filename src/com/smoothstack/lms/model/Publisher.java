@@ -3,9 +3,9 @@ package com.smoothstack.lms.model;
 public class Publisher {
     private String name;
     private String address;
-    private String id;
+    private int id;
 
-    public Publisher(String name, String address, String id) {
+    public Publisher(String name, String address, int id) {
         this.name = name;
         this.address = address;
         this.id = id;
@@ -27,11 +27,11 @@ public class Publisher {
         this.address = address;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

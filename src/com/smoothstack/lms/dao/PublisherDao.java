@@ -1,101 +1,90 @@
 package com.smoothstack.lms.dao;
 
+import com.smoothstack.lms.model.Author;
 import com.smoothstack.lms.model.Publisher;
+import com.smoothstack.lms.myutil.Env;
 
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 public class PublisherDao {
 
-    public static void add(Publisher publisher) {
+    public static void show() {
         try {
-            FileWriter fr = new FileWriter("./resources/publisher.csv", true);
-            BufferedWriter writer = new BufferedWriter(fr);
-            writer.newLine();
-            writer.append(publisher.getName() + ";");
-            writer.append(publisher.getAddress() + ";");
-            writer.append(publisher.getId() + ";");
-            writer.close();
-            System.out.println(publisher.getName() + " has been added!");
-        } catch (IOException e) {
-            e.printStackTrace();
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from tbl_publisher");
+            while (rs.next())
+                System.out.println(rs.getInt(1) + "  " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4));
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
-    public static void show() {
-        File fileName = new File("./resources/publisher.csv");
+    public static void add(Publisher publisher) {
         try {
-            FileReader fr = new FileReader(fileName);
-            BufferedReader br = new BufferedReader(fr);
-            br.lines().forEach(System.out::println);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO tbl_publisher VALUES(?,?,?)");
+            stmt.setInt(1, publisher.getId());
+            stmt.setString(2, publisher.getName());
+            stmt.setString(3, publisher.getAddress());
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
     public static Map<String, Publisher> createMap() {
 
-        Map<String, Publisher> publisherBookMap = new HashMap<>();
+        Map<String, Publisher> publisherMap = new HashMap<>();
         //initiated buffer reader
         try {
-            FileInputStream fin = new FileInputStream("./resources/publisher.csv");
-            BufferedReader buffReader = new BufferedReader(new InputStreamReader(fin));
-            String authorLine;
-            while ((authorLine = buffReader.readLine()) != null) {
-                String[] splitArray = authorLine.split(";");
-                Publisher p = new Publisher(splitArray[0], splitArray[1], splitArray[2]);
-                publisherBookMap.put(splitArray[2], p);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //initiate map
-        return publisherBookMap;
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select * from tbl_author");
+            while (rs.next()) ;
+            publisherMap.put(Integer.toString(rs.getInt(1)), new Publisher(rs.getString(2), rs.getString(3), rs.getInt(1)));
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }        //initiate map
+        return publisherMap;
     }
 
-    public static void delete(String key, Map<String, Publisher> map) {
-        if (map.containsKey(key)) {
-            try {
-                FileWriter fr = new FileWriter("./resources/publisher.csv");
-                BufferedWriter writer = new BufferedWriter(fr);
-                map.remove(key);
-                map.forEach((mapKey, value) -> {
-                    try {
-                        writer.append(mapKey + ";");
-                        writer.append(value.getName() + ";");
-                        writer.append(value.getAddress() + ";");
-                        writer.append(value.getId() + ";");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                writer.close();
-            } catch (IOException exc) {
-                exc.printStackTrace();
-            }
-        } else {
-            System.out.println("Publisher does not exist");
-        }
-    }
-
-//updates the csv by writing to it
-    public static void update(Map<String, Publisher> map) {
+    public static void delete(Publisher publisher) {
         try {
-            FileWriter fr = new FileWriter("./resources/publisher.csv");
-            BufferedWriter writer = new BufferedWriter(fr);
-            map.forEach((mapKey, value) -> {
-                try {
-                    writer.append(value.getName() + ";");
-                    writer.append(value.getAddress() + ";");
-                    writer.append(value.getId() + ";");
-                    writer.newLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            writer.close();
-        } catch (IOException exc) {
-            exc.printStackTrace();
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM tbl_publisher WHERE publisherId = (?)");
+            stmt.setInt(1, publisher.getId());
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    //updates the csv by writing to it
+    public static void update(Publisher publisher) {
+        try {
+            Connection con = DriverManager.getConnection(
+                    "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
+            PreparedStatement stmt = con.prepareStatement("UPDATE tbl_author " +
+                    "SET publisherId = (?),publisherName = (?), publisherAddress = (?) "+
+                    "WHERE publisherId = (?)");
+            stmt.setInt(1, publisher.getId());
+            stmt.setString(2, publisher.getName());
+            stmt.setInt(3, publisher.getId());
+            stmt.executeUpdate();
+            con.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 }

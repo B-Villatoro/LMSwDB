@@ -7,6 +7,7 @@ import com.smoothstack.lms.dao.PublisherDao;
 import com.smoothstack.lms.model.Author;
 import com.smoothstack.lms.model.Book;
 import com.smoothstack.lms.model.Publisher;
+import com.smoothstack.lms.myutil.IdValidate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,47 +18,53 @@ public class AuthorService {
 
 
     //Prompt users to fulfill requirements for the
-    public static void addAuthor(String authorId) {
+    public static void addAuthor(int authorId) {
         System.out.println("Please enter the author name you would like to add");
         Scanner scan = new Scanner(System.in);
         String name = scan.nextLine();
 
         AuthorDao.add(new Author(name, authorId));
-        System.out.println("Author Added!Let's continue.");
+        System.out.println("Author Added! Let's continue.");
     }
 
 
     public static void addAuthor() {
-        Map<String, Author> authorMap = AuthorDao.createMap();
+
         Scanner scan = new Scanner(System.in);
         String name;
-        String authorId;
+        String userAuthorId;
+        int authorId;
 
         System.out.println("Please enter author Id");
-        authorId = scan.nextLine();
-        authorId = "aid-" + authorId;
+        userAuthorId = scan.nextLine();
+        while(IdValidate.isValid(userAuthorId)){
+            System.out.println("Enter vaild id");
+            userAuthorId = scan.nextLine();
+        }
 
-        if (authorMap.containsKey(authorId)) {
+        Map<String, Author> authorMap = AuthorDao.createMap();
+        if (authorMap.containsKey(userAuthorId)) {
             System.out.println("Author id already exists");
         } else {
             System.out.println("Please enter the author name you would like to add");
             name = scan.nextLine();
 
+            authorId = IdValidate.parser(userAuthorId);
             AuthorDao.add(new Author(name, authorId));
             System.out.println(name + " is added!");
         }
     }
 
     public static void updateAuthor() {
-        Map<String, Author> authorMap = AuthorDao.createMap();
+
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Enter the Author Id you would like to update");
         String authorKey = scan.nextLine();
-        authorKey = "aid-" + authorKey;
 
+        Map<String, Author> authorMap = AuthorDao.createMap();
         if (authorMap.containsKey(authorKey)) {
-            Author a = authorMap.get(authorKey);
+            Author updateAuthor = authorMap.get(authorKey);
             System.out.println("What would you like to change?\n" +
                     "(1)Author name\n" +
                     "(2)Author Id\n");
@@ -66,34 +73,24 @@ public class AuthorService {
                 case "1":
                     System.out.println("What would you like to change it to?");
                     String changeName = scan.nextLine();
-                    a.setName(changeName);
-                    authorMap.put(authorKey, a);
-                    AuthorDao.update(authorMap);
+                    updateAuthor.setName(changeName);
+                    AuthorDao.update(updateAuthor);
                     break;
 
                 case "2":
                     System.out.println("What would you like to change it to?");
                     String changeAid = scan.nextLine();
-                    changeAid = "aid-" + changeAid;
-                    while (authorMap.containsKey(changeAid)) {
-                        System.out.println("Author id already exists, please try again");
+
+                    while (authorMap.containsKey(changeAid) && !IdValidate.isValid(changeAid)) {
+                        System.out.println("Author id already exists or is not valid, please try again");
                         changeAid = scan.nextLine();
-                        changeAid = "aid-" + changeAid;
                     }
 
-                    Map<String, Book> bookMap = BookDao.createMap();
-                    String finalChangeAid = changeAid;
-                    String finalAuthorKey = authorKey;
-                    bookMap.forEach((key, book) -> {
-                        if (book.getAuthorId().equalsIgnoreCase(authorMap.get(finalAuthorKey).getId())) {
-                            book.setAuthorId(finalChangeAid);
-                        }
-                    });
-                    a.setId(changeAid);
-                    authorMap.remove(authorKey);
-                    authorMap.put(changeAid, a);
-                    AuthorDao.update(authorMap);
-                    BookDao.update(bookMap);
+                    int finalChangeAid = IdValidate.parser(changeAid);
+
+                    updateAuthor.setId(finalChangeAid);
+                    AuthorDao.update(updateAuthor);
+
                     System.out.println("Author and all books have been updated to the new id!");
                     break;
             }
@@ -105,89 +102,17 @@ public class AuthorService {
 
     public static void deleteAuthor() {
         Map<String, Author> authorMap = AuthorDao.createMap();
-        Map<String, Book> bookMap = BookDao.createMap();
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Enter the author id you would like to delete");
         String deleteKey = scan.nextLine();
-        deleteKey = "aid" + deleteKey;
-        String finalDeleteKey = deleteKey;
 
         if (authorMap.containsKey(deleteKey)) {
-            bookMap.forEach((key, book) -> {
-                if (book.getAuthorId().equalsIgnoreCase(authorMap.get(finalDeleteKey).getId())) {
-                    BookDao.delete(key, bookMap);
-                }
-            });
-            AuthorDao.delete(deleteKey, authorMap);
+            AuthorDao.delete(authorMap.get(deleteKey));
+            System.out.println(authorMap.get(deleteKey).getName()+ " is deleted!");
         } else {
             System.out.println("Author does not exist");
         }
 
     }
 }
-
-//method creates book and returns it to the list. Needed for adding and author with a list of books
-// ***** Deprecated ***********
-//    public static List<Book> createBook(List<Book> bookL, String authorId) {
-//        String isbn;
-//        String title;
-//        String publisherId;
-//        String yn;
-//        Scanner scan = new Scanner(System.in);
-//        Map<String, Publisher> publisherMap = PublisherDao.createMap();
-//        Map<String, Book> bookMap = BookDao.createMap();
-//
-//        System.out.println("Please enter the ISBN of the book written by the author");
-//        isbn = "isbn-" + scan.nextLine();
-//        if (bookMap.containsKey(isbn)) {
-//            System.out.println("That book already exists, would you like to try again?");
-//            yn = scan.nextLine();
-//            if (yn.equalsIgnoreCase("y") || yn.equalsIgnoreCase("yes")) {
-//                return createBook(bookL, authorId);
-//            } else Menu.mainMenu();
-//        }
-//
-//        System.out.println("Please enter the publisher Id of the book");
-//        publisherId = "pid-" + scan.nextLine();
-//        if (publisherMap.containsKey(publisherId)) {
-//
-//            System.out.println("Please enter the title written by said author");
-//            title = scan.nextLine();
-//
-//            bookL.add(new Book(title, isbn, authorId, publisherId));
-//            BookDao.add(new Book(title, isbn, authorId, publisherId));
-//
-//            System.out.println("Would you like to add another? y/n");
-//            yn = scan.nextLine();
-//            yn = yn.toLowerCase();
-//
-//            if (yn.equalsIgnoreCase("y") || yn.equalsIgnoreCase("yes")) {
-//                return createBook(bookL, authorId);
-//            }
-//        } else {
-//            System.out.println("Publisher does not exist, please add publisher first");
-//            PublisherService.addPublisher(publisherId);
-//            System.out.println("lets try this again");
-//            return createBook(bookL,authorId);
-//        }
-//        return bookL;
-//    }
-
-//Overloaded method to call from add Book
-//***** Deprecated*********
-//    public static void addAuthor(String authorId,String title,String isbn,String publisherId){
-//        System.out.println("Please enter the author name you would like to add");
-//        Scanner scan = new Scanner(System.in);
-//        String name = scan.nextLine();
-//
-//        List<Book> bookList = new ArrayList<>();
-//        bookList.add(new Book(title,isbn,authorId,publisherId));
-//        System.out.println("Would you like to add more under this author? y/n");
-//        String userAnswer = scan.nextLine();
-//        if(userAnswer.equalsIgnoreCase("y")||userAnswer.equalsIgnoreCase("yes")){
-//            bookList = createBook(bookList, authorId);
-//        }else{
-//            AuthorDao.add(new Author(name, bookList, authorId));
-//        }
-//    }

@@ -7,6 +7,7 @@ import com.smoothstack.lms.dao.PublisherDao;
 import com.smoothstack.lms.model.Author;
 import com.smoothstack.lms.model.Book;
 import com.smoothstack.lms.model.Publisher;
+import com.smoothstack.lms.myutil.IdValidate;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -17,69 +18,98 @@ public class BookService {
     public static void addBook() {
         Map<String, Book> bookMap = BookDao.createMap();
         Scanner scan = new Scanner(System.in);
-        String title;
         String isbn;
         String authorId;
         String publisherId;
 
         System.out.println("Please enter Isbn ");
         isbn = scan.nextLine();
-        isbn = "isbn-" + isbn;
 
         //if isbn already exists, book exists
-        if (bookMap.containsKey(isbn)) {
-            System.out.println("ISBN already exists, returning to main menu");
-        } else {
-            //prompt for pid and check if exists
-            Map<String, Publisher> publisherMap = PublisherDao.createMap();
+        while (bookMap.containsKey(isbn) && !IdValidate.isValid(isbn)) {
+            System.out.println("ISBN already exists or is not valid please try again");
+            isbn = scan.nextLine();
+        }
+        int newIsbn = IdValidate.parser(isbn);
+        //prompt for pid and check if exists
 
-            System.out.println("Please enter the title name you would like to add");
-            title = scan.nextLine();
+        System.out.println("Please enter the title name you would like to add");
+        String title = scan.nextLine();
 
-            System.out.println("Please enter the publisher id");
+        Map<String, Publisher> publisherMap = PublisherDao.createMap();
+        System.out.println("Please enter the publisher id");
+        publisherId = scan.nextLine();
+
+        while (!IdValidate.isValid(publisherId)) {
+            System.out.println("Not a valid publisher Id, please try again");
             publisherId = scan.nextLine();
-            publisherId = "pid-" + publisherId;
+        }
 
-            if (publisherMap.containsKey(publisherId)) {
-                //prompt for aid and check if exists
-                Map<String, Author> authorMap = AuthorDao.createMap();
-                System.out.println("Please enter the author id");
+        if (publisherMap.containsKey(publisherId)) {
+            //prompt for aid and check if exists
+            Map<String, Author> authorMap = AuthorDao.createMap();
+            System.out.println("Please enter the author id");
+            authorId = scan.nextLine();
+
+            while (!IdValidate.isValid(authorId)) {
+                System.out.println("Not a valid author Id, please try again");
                 authorId = scan.nextLine();
-                authorId = "aid-" + authorId;
-                if (authorMap.containsKey(authorId)) {
-                    //all passes create book
-                    BookDao.add(new Book(title, (isbn), authorId, publisherId));
-                    System.out.println("Book added! Returning to main menu.");
-                    Menu.mainMenu();
-                } else {
-                    //if author does not exist add the book through author handler
-                    System.out.println("Author does not exist, creating author");
-                    AuthorService.addAuthor();
-                }
+            }
+
+
+            if (authorMap.containsKey(authorId)) {
+                //all passes create book
+                int newPubId = IdValidate.parser(publisherId);
+                int newAuthorId = IdValidate.parser(authorId);
+
+                BookDao.add(new Book(title, newIsbn, newAuthorId, newPubId));
+                System.out.println(title + " added!");
 
             } else {
-                //if pid doesn't exist make it exist
-                System.out.println("publisher does not exist...\n" +
-                        "Creating publisher");
-                PublisherService.addPublisher(publisherId);
+                //if author does not exist, create author then create book
+                int newPubId = IdValidate.parser(publisherId);
+                int newAuthorId = IdValidate.parser(authorId);
+                System.out.println("Author does not exist, creating author");
+                AuthorService.addAuthor(newAuthorId);
 
-                System.out.println("Lets continue!");
-                Map<String, Author> authorMap = AuthorDao.createMap();
-                System.out.println("Please enter the author id");
-                authorId = scan.nextLine();
-                authorId = "aid-" + authorId;
-                if (authorMap.containsKey(authorId)) {
-                    //all passes create book
-                    BookDao.add(new Book(title, isbn, authorId, publisherId));
-                    System.out.println("Book added! Returning to main menu.");
-                    Menu.mainMenu();
-                } else {
-                    //if author does not exist add the book through author handler
-                    System.out.println("Author does not exist, creating author");
-                    AuthorService.addAuthor(authorId);
-                }
+                BookDao.add(new Book(title, newIsbn, newAuthorId, newPubId));
             }
-        }//end big else
+
+        } else {
+            //if pid doesn't exist make it exist
+            System.out.println("Publisher does not exist...\n" +
+                    "Creating publisher");
+            int newPubId = IdValidate.parser(publisherId);
+            PublisherService.addPublisher(newPubId);
+
+            System.out.println("Lets continue!");
+
+            Map<String, Author> authorMap = AuthorDao.createMap();
+            System.out.println("Please enter the author id");
+            authorId = scan.nextLine();
+
+            while (!IdValidate.isValid(authorId)) {
+                System.out.println("Not a valid author Id, please try again");
+                authorId = scan.nextLine();
+            }
+
+            if (authorMap.containsKey(authorId)) {
+                //all passes create book
+                int newAuthorId = IdValidate.parser(authorId);
+
+                BookDao.add(new Book(title, newIsbn, newAuthorId, newPubId));
+                System.out.println(title + " added!");
+            } else {
+                //if author does not exist add the book through author handler
+                int newAuthorId = IdValidate.parser(authorId);
+                System.out.println("Author does not exist, creating author");
+                AuthorService.addAuthor(newAuthorId);
+                System.out.println("Lets continue!");
+                BookDao.add(new Book(title, newIsbn, newAuthorId, newPubId));
+                System.out.println(title + " added!");
+
+            }
+        }
     }
 
 
@@ -109,37 +139,41 @@ public class BookService {
                 case "1":
                     System.out.println("What would you like to change it to?");
                     String changeTitle = scan.nextLine();
-
                     bookMap.get(bookKey).setTitle(changeTitle);
-                    BookDao.update(bookMap);
+                    BookDao.update(bookMap.get(bookKey));
                     break;
 
                 case "2":
                     System.out.println("What would you like to change ISBN to?");
                     String changeIsbn = scan.nextLine();
-                    changeIsbn = "isbn-" + changeIsbn;
 
-                    //validate new key
-                    while (bookMap.containsKey(changeIsbn)) {
-                        System.out.println("ISBN already exists, please try again");
+                    //validate new book id
+                    while (bookMap.containsKey(changeIsbn) && !IdValidate.isValid(changeIsbn)) {
+                        System.out.println("ISBN already exists or is not valid please try again");
                         changeIsbn = scan.nextLine();
-                        changeIsbn = "isbn-" + changeIsbn;
                     }
-                    b.setIsbn(changeIsbn);
-                    bookMap.remove(bookKey);
-                    bookMap.put(changeIsbn, b);
-                    BookDao.update(bookMap);
+
+                    int newIsbn = IdValidate.parser(changeIsbn);
+
+
+                    b.setIsbn(newIsbn);
+
+                    BookDao.update(b);
                     break;
 
                 case "3":
-//                    Map<String,Author>authorMap = AuthorDao.createMap();
                     System.out.println("What would you like to change author id to?");
                     String changeAid = scan.nextLine();
-                    changeAid = "aid-" + changeAid;
+
+                    while (!IdValidate.isValid(changeAid)) {
+                        System.out.println("Not a valid author Id, please try again");
+                        changeAid = scan.nextLine();
+                    }
+
                     if (authorMap.containsKey(changeAid)) {
-                        b.setAuthorId(changeAid);
-                        bookMap.put(bookKey, b);
-                        BookDao.update(bookMap);
+
+                        b.setAuthorId(IdValidate.parser(changeAid));
+                        BookDao.update(b);
 
                     } else {
                         System.out.println("Cannot change to an author that does not exist");
@@ -149,15 +183,17 @@ public class BookService {
                     Map<String, Publisher> publisherMap = PublisherDao.createMap();
                     System.out.println("What would you like to change publisher id to?");
                     String changePid = scan.nextLine();
-                    changePid = "pid-" + changePid;
+
+                    while (!IdValidate.isValid(changePid)) {
+                        System.out.println("Not a valid publisher Id, please try again");
+                        changePid = scan.nextLine();
+                    }
                     if (publisherMap.containsKey(changePid)) {
-                        b.setPublisherId(changePid);
-                        bookMap.put(bookKey, b);
-                        BookDao.update(bookMap);
+                        b.setPublisherId(IdValidate.parser(changePid));
+                        BookDao.update(b);
                     } else {
                         System.out.println("Publisher does not exist");
                     }
-
             }
         } else {
             System.out.println("ISBN does not exist");
@@ -171,10 +207,12 @@ public class BookService {
 
         System.out.println("Enter the isbn you would like to delete");
         String deleteKey = scan.nextLine();
-        deleteKey = "isbn-" + deleteKey;
-
+        while (!IdValidate.isValid(deleteKey)) {
+            System.out.println("ISBN is not valid please try again");
+            deleteKey = scan.nextLine();
+        }
         if (bookMap.containsKey(deleteKey)) {
-            BookDao.delete(deleteKey, bookMap);
+            BookDao.delete(bookMap.get(deleteKey));
             System.out.println("Book Deleted!");
         } else {
             System.out.println("Book does not exist");

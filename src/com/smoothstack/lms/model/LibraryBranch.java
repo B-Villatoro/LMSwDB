@@ -1,21 +1,21 @@
 package com.smoothstack.lms.model;
 
-public class Library {
-    private String branchId;
+public class LibraryBranch {
+    private int branchId;
     private String branchName;
     private String branchAddress;
 
-    public Library(String branchId, String branchName, String branchAddress) {
+    public LibraryBranch(int branchId, String branchName, String branchAddress) {
         this.branchId = branchId;
         this.branchName = branchName;
         this.branchAddress = branchAddress;
     }
 
-    public String getBranchId() {
+    public int getBranchId() {
         return branchId;
     }
 
-    public void setBranchId(String branchId) {
+    public void setBranchId(int branchId) {
         this.branchId = branchId;
     }
 
