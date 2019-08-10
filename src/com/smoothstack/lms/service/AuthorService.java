@@ -29,7 +29,7 @@ public class AuthorService {
 
         System.out.println("Please enter author Id");
         userAuthorId = scan.nextLine();
-        while(IdValidate.isValid(userAuthorId)){
+        while(!IdValidate.isValid(userAuthorId)){
             System.out.println("Enter vaild id");
             userAuthorId = scan.nextLine();
         }
@@ -53,6 +53,10 @@ public class AuthorService {
 
         System.out.println("Enter the Author Id you would like to update");
         String authorKey = scan.nextLine();
+        while(IdValidate.isValid(authorKey)){
+            System.out.println("Enter vaild id");
+            authorKey = scan.nextLine();
+        }
 
         Map<String, Author> authorMap = AuthorDao.createMap();
         if (authorMap.containsKey(authorKey)) {
@@ -73,7 +77,7 @@ public class AuthorService {
                     System.out.println("What would you like to change it to?");
                     String changeAid = scan.nextLine();
 
-                    while (authorMap.containsKey(changeAid) && !IdValidate.isValid(changeAid)) {
+                    while (authorMap.containsKey(changeAid) || !IdValidate.isValid(changeAid)) {
                         System.out.println("Author id already exists or is not valid, please try again");
                         changeAid = scan.nextLine();
                     }

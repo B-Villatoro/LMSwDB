@@ -1,10 +1,6 @@
 package com.smoothstack.lms.service;
 
-import com.smoothstack.lms.dao.AuthorDao;
-import com.smoothstack.lms.dao.BookDao;
 import com.smoothstack.lms.dao.PublisherDao;
-import com.smoothstack.lms.model.Author;
-import com.smoothstack.lms.model.Book;
 import com.smoothstack.lms.model.Publisher;
 import com.smoothstack.lms.myutil.IdValidate;
 
@@ -39,7 +35,14 @@ public class PublisherService {
         System.out.println("Please enter the publisher address");
         address = scan.nextLine();
 
-        PublisherDao.add(new Publisher(publisherName, address, IdValidate.parser(publisherId)));
+        System.out.println("Please enter the publisher phone number");
+        String phone = scan.nextLine();
+        while(!IdValidate.isValid(phone)){
+            System.out.println("Not valid please try again");
+            phone = scan.nextLine();
+        }
+
+        PublisherDao.add(new Publisher(publisherName, address,IdValidate.parser(phone), IdValidate.parser(publisherId)));
         System.out.println(publisherName + " is added!");
     }
 
@@ -52,7 +55,14 @@ public class PublisherService {
         System.out.println("Please enter the publisher address");
         String address = scan.nextLine();
 
-        PublisherDao.add(new Publisher(publisherName, address, publisherId));
+        System.out.println("Please enter the publisher phone number");
+        String phone = scan.nextLine();
+        while(!IdValidate.isValid(phone)){
+            System.out.println("Not valid please try again");
+            phone = scan.nextLine();
+        }
+
+        PublisherDao.add(new Publisher(publisherName, address,IdValidate.parser(phone), publisherId));
         System.out.println(publisherName + " is added!");
     }
 
@@ -74,7 +84,8 @@ public class PublisherService {
             System.out.println("What would you like to change?\n" +
                     "(1)Publisher name\n" +
                     "(2)Publisher address\n" +
-                    "(3)Publisher id");
+                    "(3)Publisher Phone Number"+
+                    "(4)Publisher id");
             userChoice = scan.nextLine();
 
             switch (userChoice) {
@@ -96,13 +107,21 @@ public class PublisherService {
                     break;
 
                 case "3":
+                    System.out.println("What would you like to change the phone number to?");
 
+                    String phone = scan.nextLine();
+                    while(!IdValidate.isValid(phone)){
+                        System.out.println("Not valid please try again");
+                        phone = scan.nextLine();
+                    }
+                    p.setPhone(IdValidate.parser(phone));
+                    PublisherDao.update(p);
+                case "4":
 
                     System.out.println("What would you like to change the publisher id to?");
                     String changeId = scan.nextLine();
-                    changeId = "pid-" + changeId;
 
-                    while (publisherMap.containsKey(changeId) && !IdValidate.isValid(changeId)) {
+                    while (publisherMap.containsKey(changeId) || !IdValidate.isValid(changeId)) {
                         if(publisherMap.containsKey(changeId)){
                             System.out.println("Id already exists, please try again.");
                             changeId = scan.nextLine();
@@ -116,6 +135,9 @@ public class PublisherService {
                     PublisherDao.updateById(p,IdValidate.parser(publisherKey));
                     System.out.println("Publisher id has been changed!");
                     break;
+                    default:
+                        System.out.println("Invalid option");
+                        break;
             }
         } else {
             System.out.println("Publisher does not exist");

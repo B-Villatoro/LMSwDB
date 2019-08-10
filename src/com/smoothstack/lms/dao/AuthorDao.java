@@ -45,8 +45,9 @@ public class AuthorDao {
                     "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from tbl_author");
-            while (rs.next()) ;
-            authorMap.put(Integer.toString(rs.getInt(1)), new Author(rs.getString(2), rs.getInt(1)));
+            while (rs.next()){
+                authorMap.put(Integer.toString(rs.getInt(1)), new Author(rs.getString(2), rs.getInt(1)));
+            }
             con.close();
         } catch (Exception e) {
             System.out.println(e);

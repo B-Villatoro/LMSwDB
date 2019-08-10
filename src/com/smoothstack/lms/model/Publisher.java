@@ -4,11 +4,13 @@ public class Publisher {
     private String name;
     private String address;
     private int id;
+    private int phone;
 
-    public Publisher(String name, String address, int id) {
+    public Publisher(String name, String address,int phone, int id) {
         this.name = name;
         this.address = address;
         this.id = id;
+        this.phone = phone;
     }
 
     public String getName() {
@@ -33,5 +35,13 @@ public class Publisher {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getPhone() {
+        return phone;
+    }
+
+    public void setPhone(int phone) {
+        this.phone = phone;
     }
 }

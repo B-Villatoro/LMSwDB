@@ -1,4 +1,3 @@
-package com.smoothstack.lms.tests;
 
 import com.smoothstack.lms.myutil.IdValidate;
 import org.junit.Test;
@@ -15,10 +14,14 @@ public class IdValidateTests {
 
 
     @Test
-    public void idValidateBool() throws IOException {
-        assertTrue("Returned false, is not valid", IdValidate.isValid("01234") == true);
+    public void idValidateIsValid() {
+        assertTrue("Returned false, 01234 is a valid response", IdValidate.isValid("01234") == true);
     }
 
+    @Test
+    public void idValidateParser() {
+        assertTrue("Returned as incorrect int",IdValidate.parser("123") ==123);
+    }
 }
 
 

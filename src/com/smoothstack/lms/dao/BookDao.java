@@ -52,9 +52,10 @@ public class BookDao {
                     "jdbc:mysql://" + Env.port() + "/" + Env.db(), Env.user(), Env.p());
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery("select * from tbl_book");
-            while (rs.next());
-            bookMap.put(Integer.toString(rs.getInt(1)),new Book(rs.getString(2),
-                    rs.getInt(1),rs.getInt(3),rs.getInt(4)));
+            while (rs.next()){
+                bookMap.put(Integer.toString(rs.getInt(1)),new Book(rs.getString(2),
+                        rs.getInt(1),rs.getInt(3),rs.getInt(4)));
+            }
             con.close();
         } catch (Exception e) {
             System.out.println(e);
@@ -89,6 +90,7 @@ public class BookDao {
             stmt.setString(2, book.getTitle());
             stmt.setInt(3, book.getAuthorId());
             stmt.setInt(4, book.getPublisherId());
+            stmt.setInt(5,book.getIsbn());
             stmt.executeUpdate();
             con.close();
         } catch (Exception e) {
@@ -105,7 +107,8 @@ public class BookDao {
             stmt.setInt(1, book.getIsbn());
             stmt.setString(2, book.getTitle());
             stmt.setInt(3, book.getAuthorId());
-            stmt.setInt(4, oldId);
+            stmt.setInt(4, book.getPublisherId());
+            stmt.setInt(5, oldId);
             stmt.executeUpdate();
             con.close();
         } catch (Exception e) {

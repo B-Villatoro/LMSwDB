@@ -1,6 +1,5 @@
 package com.smoothstack.lms.service;
 
-import com.smoothstack.lms.app.Menu;
 import com.smoothstack.lms.dao.AuthorDao;
 import com.smoothstack.lms.dao.BookDao;
 import com.smoothstack.lms.dao.PublisherDao;
@@ -151,7 +150,7 @@ public class BookService {
                     String changeIsbn = scan.nextLine();
 
                     //validate new book id
-                    while (bookMap.containsKey(changeIsbn) && !IdValidate.isValid(changeIsbn)) {
+                    while (bookMap.containsKey(changeIsbn) || !IdValidate.isValid(changeIsbn)) {
                         System.out.println("ISBN already exists or is not valid please try again");
                         changeIsbn = scan.nextLine();
                     }
