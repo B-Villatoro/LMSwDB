@@ -7,9 +7,7 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BorrowerDao {
-
-
+public class BookLoansDao {
     public static void show() {
         try {
             Connection con = DriverManager.getConnection(
@@ -106,7 +104,6 @@ public class BorrowerDao {
             System.out.println(e);
         }
     }
-
 
 
 }

@@ -4,9 +4,9 @@ public class Borrower {
     int cardNo;
     String borrowerName;
     String borrowerAddress;
-    String borrowerPhone;
+    int borrowerPhone;
 
-    public Borrower(int cardNo, String borrowerName, String borrowerAddress, String borrowerPhone) {
+    public Borrower(int cardNo, String borrowerName, String borrowerAddress, int borrowerPhone) {
         this.cardNo = cardNo;
         this.borrowerName = borrowerName;
         this.borrowerAddress = borrowerAddress;
@@ -37,11 +37,11 @@ public class Borrower {
         this.borrowerAddress = borrowerAddress;
     }
 
-    public String getBorrowerPhone() {
+    public int getBorrowerPhone() {
         return borrowerPhone;
     }
 
-    public void setBorrowerPhone(String borrowerPhone) {
+    public void setBorrowerPhone(int borrowerPhone) {
         this.borrowerPhone = borrowerPhone;
     }
 }
