@@ -1,11 +1,11 @@
 package com.smoothstack.lms.model;
 
-public class LibraryBranch {
+public class Library {
     private int branchId;
     private String branchName;
     private String branchAddress;
 
-    public LibraryBranch(int branchId, String branchName, String branchAddress) {
+    public Library(int branchId, String branchName, String branchAddress) {
         this.branchId = branchId;
         this.branchName = branchName;
         this.branchAddress = branchAddress;

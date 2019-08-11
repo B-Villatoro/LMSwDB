@@ -55,6 +55,8 @@ public class BookDaoTests {
     @Test
     public void BookDaoDelete(){
         BookDao.delete(new Book("TestUpdate",101,99,99));
+        PublisherDao.delete(new Publisher("TestPub","TestAddy",99,99));
+        AuthorDao.delete(new Author("TestAuthor",99));
         BookDao.show();
     }
 
