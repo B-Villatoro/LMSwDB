@@ -1,11 +1,12 @@
 package com.smoothstack.lms.app;
 
-import com.smoothstack.lms.dao.AuthorDao;
-import com.smoothstack.lms.dao.BookDao;
-import com.smoothstack.lms.dao.PublisherDao;
-import com.smoothstack.lms.service.AuthorService;
-import com.smoothstack.lms.service.BookService;
-import com.smoothstack.lms.service.PublisherService;
+import com.smoothstack.lms.dao.*;
+import com.smoothstack.lms.model.BookCopies;
+import com.smoothstack.lms.model.BookLoans;
+import com.smoothstack.lms.model.Borrower;
+import com.smoothstack.lms.model.Library;
+import com.smoothstack.lms.service.*;
+
 import java.util.Scanner;
 
 public class Menu {
@@ -22,6 +23,10 @@ public class Menu {
                 "(2)Add to the library\n" +
                 "(3)Update an existing item\n" +
                 "(4)Remove from the library\n" +
+                "(5)Sign Up for a library card\n"+
+                "(6)Check out a book today\n" +
+                "(7)Extend the due date\n" +
+                "(8)Return a book\n"+
                 "(0)Close Program");
 
         String optionSelect = scan.nextLine();
@@ -37,6 +42,18 @@ public class Menu {
                 break;
             case "4":
                 handleDelete();
+                break;
+            case "5":
+                BorrowerService.addBorrower();
+                break;
+            case "6":
+                BookLoansService.checkOutBook();
+                break;
+            case "7":
+                BookLoansService.extendDueDate();
+                break;
+            case "8":
+                BookLoansService.returnBook();
                 break;
             case "0":
                 System.out.println("GoodBye!");
@@ -64,7 +81,8 @@ public class Menu {
         System.out.println("What item would you like to add?\n" +
                 "(1)Author\n" +
                 "(2)Book\n" +
-                "(3)Publisher");
+                "(3)Publisher\n" +
+                "(4)Library Branch");
         String opt = scan.nextLine();
         opt = opt.toLowerCase();
         switch (opt) {
@@ -85,6 +103,10 @@ public class Menu {
                 backToMenu();
                 break;
 
+            case"4":
+                LibraryService.addLibrary();
+                backToMenu();
+                break;
             default:
                 System.out.println("Wrong Input");
                 handleAdd();
@@ -98,7 +120,10 @@ public class Menu {
         System.out.println("What item would you like to see?\n" +
                 "(1)Author\n" +
                 "(2)Book\n" +
-                "(3)Publisher");
+                "(3)Publisher\n" +
+                "(4)Library Branches\n" +
+                "(5)Book Copies\n" +
+                "(6)Book Loans");
         String opt = scan.nextLine();
         opt = opt.toLowerCase();
         switch (opt) {
@@ -116,6 +141,18 @@ public class Menu {
             case "3":
             case "publisher":
                 PublisherDao.show();
+                backToMenu();
+                break;
+            case "4":
+                LibraryDao.show();
+                backToMenu();
+                break;
+            case "5":
+                BookCopiesDao.show();
+                backToMenu();
+                break;
+            case "6":
+                BookLoansDao.show();
                 backToMenu();
                 break;
 

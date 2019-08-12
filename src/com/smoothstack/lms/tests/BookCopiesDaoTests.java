@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class BookCopiesDaoTests {
 
-    @Before
+    @Test
     public void createData(){
         AuthorDao.add(new Author("TestAuthor",99));
         PublisherDao.add(new Publisher("TestPub","TestAddy",99,99));
@@ -30,7 +30,7 @@ public class BookCopiesDaoTests {
 
     }
 
-    @After
+    @Test
     public void removeData(){
 
         BookDao.delete(new Book("TestAdd",101,101,101));
